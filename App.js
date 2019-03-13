@@ -1,21 +1,29 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import axios from 'axios';
+
+const API_URL = 'https://www.boredapi.com/api/activity';
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      activity: '',
+      activity: null,
     };
   }
 
   render() {
+    const { activity } = this.state;
+    const content =
+      activity !== null ? (
+        <Text style={styles.text}>{activity}</Text>
+      ) : (
+        <ActivityIndicator size='large' color='#00ff00' />
+      );
+
     return (
       <View style={styles.container}>
-        <View style={styles.textBox}>
-          <Text style={styles.text}>{this.state.activity}</Text>
-        </View>
+        <View style={styles.textBox}>{content}</View>
         <Text onPress={this.getData} style={styles.refresh}>
           Refresh
         </Text>
@@ -25,7 +33,7 @@ export default class App extends React.Component {
 
   getData = () => {
     axios
-      .get('https://www.boredapi.com/api/activity')
+      .get(API_URL)
       .then(({ data }) => {
         this.setState({ activity: data.activity });
       })
